@@ -1,98 +1,109 @@
+import 'package:chat_mobile/data/entities/target-collection.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import 'package:chat_models/chat_models.dart';
 import 'package:chat_api_client/chat_api_client.dart';
 
 import 'package:chat_mobile/ui/pages/chat_content.dart';
+import 'package:chat_mobile/ui/widgets/items/item-user.dart';
 import 'package:chat_mobile/data/cases/api_client.dart';
 import 'package:chat_mobile/data/cases/chat_component.dart';
-import 'package:chat_mobile/flavors/globals.dart' as globals;
+import 'package:chat_mobile/data/cases/services/live-user-collection.dart';
+import 'package:chat_mobile/data/entities/checkable-user.dart';
+import 'package:chat_mobile/data/entities/live-collection-state.dart';
+import 'package:chat_mobile/flavors/globals.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class CreateChatPage extends StatefulWidget {
-  CreateChatPage({Key key}) : super(key: key);
 
-  @override
-  _CreateChatPageState createState() => _CreateChatPageState();
+  CreateChatPage({Key key,}) : super(key: key);
+
+  @override _CreateChatPageState createState() => _CreateChatPageState();
 }
 
 class _CreateChatPageState extends State<CreateChatPage> {
-  var _checkableUsers = <_CheckableUser>[];
+
+  RefreshController refreshCtrl = RefreshController(initialRefresh: false);
+
+  ValueNotifier<bool> hasTarget;
+
+  ScrollController scrollCtrl;
 
   @override void initState() {
+
+    hasTarget = ValueNotifier(targetCollection.listTarget.isNotEmpty);
+
+    scrollCtrl = ScrollController(initialScrollOffset: liveUserCollection.currentScrollOffset);
+    scrollCtrl.addListener(() => liveUserCollection.currentScrollOffset = scrollCtrl.offset);
+
     super.initState();
-    refreshUsers();
+
+    if(liveUserCollection.currentState == LiveCollectionState.UNKNOWN)
+      liveUserCollection.load();
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-        body: Column(
-          children: <Widget>[
-            Expanded(
-              child: ListView.builder(
-                itemCount: _checkableUsers.length,
-                itemBuilder: (BuildContext context, int index) {
-                  return _buildListTile(_checkableUsers[index]);
+  @override Widget build(BuildContext context) {
+    return ValueListenableProvider<bool>.value(
+      value: hasTarget,
+      child: Scaffold(
+        body: Consumer<LiveUserCollection>(
+          builder: (_, value, __) {
+            return SmartRefresher(
+                enablePullUp: false,
+                enablePullDown: true,
+                controller: refreshCtrl,
+                header: WaterDropHeader(),
+                onRefresh: () async {
+                  try {
+                    await liveUserCollection.refresh();
+                  } catch(_) {
+                    //TODO add handle error
+                  }
+                  refreshCtrl.refreshCompleted();
                 },
-              ),
-            ),
-            RaisedButton(
-                child: Text("Create"),
-                onPressed: () {
-                  createChat();
-                }),
-          ],
-        ));
-  }
-
-  ListTile _buildListTile(_CheckableUser checkableUser) {
-    return ListTile(
-      title: Text(checkableUser.user.name ?? "noname"),
-      trailing: Checkbox(
-          value: checkableUser.isChecked,
-          onChanged: (bool value) {
-            setState(() {
-              checkableUser.isChecked = value;
-            });
-          }),
+                child: ListView.builder(
+                  physics: BouncingScrollPhysics(),
+                  controller: scrollCtrl,
+                  itemCount: value.list.length,
+                  itemBuilder: (BuildContext context, int index) => Consumer<TargetCollection>(
+                      builder: (_, _value, __) => ItemUser(
+                        user: value.list[index],
+                        isChecked: _value.hasTarget(value.list[index]),
+                        onClick: () {
+                          targetCollection.addTarget(value.list[index]);
+                          hasTarget.value = targetCollection.hasTarget(value.list[index]);
+                        },
+                      )
+                  ),
+                )
+            );
+          },
+        ),
+        floatingActionButton: Consumer<bool>(
+          builder: (_, value, __) => value ? FloatingActionButton(
+            child: Icon(Icons.add),
+            onPressed: () => createChat(),
+          ) : SizedBox.shrink(),
+        ),
+      ),
     );
   }
 
-  void refreshUsers() async {
-    try {
-      UsersClient _usersClient = UsersClient(MobileApiClient());
-      List<User> found = await _usersClient.read({});
-      found.removeWhere((user) => user.id == globals.currentUser.id);
-      setState(() {
-        _checkableUsers = found.map((foundUser) {
-          return _CheckableUser(user: foundUser);
-        }).toList();
-      });
-    } on Exception catch (e) {
-      print('Failed to get list of users');
-      print(e);
-    }
-  }
-
   void createChat() async {
-    var _checkedCounterparts = _checkableUsers
-        .where((checkableUser) => checkableUser.isChecked == true)
-        .map((checkableUser) => checkableUser.user)
-        .toList();
+    var _checkedCounterparts = targetCollection.listTarget;
     if (_checkedCounterparts.isNotEmpty) {
       try {
         ChatsClient chatsClient = ChatsClient(MobileApiClient());
         Chat createdChat = await chatsClient.create(
-            Chat(members: _checkedCounterparts..add(globals.currentUser)));
-        Navigator.pushReplacement(
-          context,
+            Chat(members: _checkedCounterparts..add(currentUser)));
+        Navigator.push(context,
           MaterialPageRoute(
             builder: (BuildContext context) => ChatContentPage(
                   chat: createdChat,
                   chatComponent: ChatComponentWidget.of(context).chatComponent,
                 ),
           ),
-          result: true,
         );
       } on Exception catch (e) {
         print('Chat creation failed');
@@ -100,14 +111,9 @@ class _CreateChatPageState extends State<CreateChatPage> {
       }
     }
   }
-}
 
-class _CheckableUser {
-  final User user;
-  bool isChecked;
-
-  _CheckableUser({
-    this.user,
-    this.isChecked = false,
-  });
+  @override void dispose() {
+    scrollCtrl?.dispose();
+    super.dispose();
+  }
 }
