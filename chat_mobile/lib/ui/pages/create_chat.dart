@@ -1,12 +1,13 @@
-import 'package:chat_api_client/chat_api_client.dart';
-import 'package:chat_models/chat_models.dart';
 import 'package:flutter/material.dart';
 
-import 'api_client.dart';
-import 'chat_component.dart';
-import 'chat_content.dart';
-import 'common_ui.dart';
-import 'globals.dart' as globals;
+import 'package:chat_models/chat_models.dart';
+import 'package:chat_api_client/chat_api_client.dart';
+
+import 'package:chat_mobile/ui/pages/chat_content.dart';
+import 'package:chat_mobile/ui/widgets/common_ui.dart';
+import 'package:chat_mobile/cases/api_client.dart';
+import 'package:chat_mobile/cases/chat_component.dart';
+import 'package:chat_mobile/flavors/globals.dart' as globals;
 
 class CreateChatPage extends StatefulWidget {
   CreateChatPage({Key key, this.title}) : super(key: key);

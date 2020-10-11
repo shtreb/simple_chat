@@ -1,9 +1,10 @@
-import 'package:chat_api_client/chat_api_client.dart';
-import 'package:chat_models/chat_models.dart';
 import 'package:flutter/material.dart';
 
-import 'api_client.dart';
-import 'globals.dart' as globals;
+import 'package:chat_models/chat_models.dart';
+import 'package:chat_api_client/chat_api_client.dart';
+
+import 'package:chat_mobile/cases/api_client.dart';
+import 'package:chat_mobile/flavors/globals.dart' as globals;
 
 class LoginPage extends StatefulWidget {
   LoginPage({Key key}) : super(key: key);

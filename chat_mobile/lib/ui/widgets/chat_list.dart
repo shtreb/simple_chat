@@ -1,14 +1,14 @@
 import 'dart:async';
 import 'dart:collection';
 
-import 'package:chat_api_client/chat_api_client.dart';
-import 'package:chat_models/chat_models.dart';
 import 'package:flutter/material.dart';
+import 'package:chat_models/chat_models.dart';
+import 'package:chat_api_client/chat_api_client.dart';
 
-import 'api_client.dart';
-import 'chat_component.dart';
-import 'chat_content.dart';
-import 'common_ui.dart';
+import 'package:chat_mobile/ui/pages/chat_content.dart';
+import 'package:chat_mobile/ui/widgets/common_ui.dart';
+import 'package:chat_mobile/cases/api_client.dart';
+import 'package:chat_mobile/cases/chat_component.dart';
 
 class ChatListPage extends StatefulWidget {
   ChatListPage({Key key, this.title, @required this.chatComponent})

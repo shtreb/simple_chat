@@ -1,6 +1,6 @@
 import 'package:chat_api_client/chat_api_client.dart';
 
-import 'globals.dart' as globals;
+import 'package:chat_mobile/flavors/globals.dart' as globals;
 
 class MobileApiClient extends ApiClient {
   MobileApiClient()
