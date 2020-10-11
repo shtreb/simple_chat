@@ -1,9 +1,10 @@
+import 'package:chat_mobile/data/cases/services/auth-service.dart';
 import 'package:flutter/material.dart';
 
 import 'package:chat_models/chat_models.dart';
 import 'package:chat_api_client/chat_api_client.dart';
 
-import 'package:chat_mobile/cases/api_client.dart';
+import 'package:chat_mobile/data/cases/api_client.dart';
 import 'package:chat_mobile/flavors/globals.dart' as globals;
 
 class LoginPage extends StatefulWidget {
@@ -107,8 +108,10 @@ class _LoginPageState extends State<LoginPage> {
         if (resultValue != null && resultValue is bool && resultValue) {
           UsersClient usersClient = UsersClient(MobileApiClient());
           usersClient
-              .create(
-                  User(name: _loginData.login, password: _loginData.password))
+              .create(User(
+                name: _loginData.login,
+                password: _loginData.password
+              ))
               .then((createdUser) {
             _clearUi();
             final snackBar =
@@ -132,12 +135,11 @@ class _LoginPageState extends State<LoginPage> {
 
       try {
         UsersClient usersClient = UsersClient(MobileApiClient());
-        var user =
-            await usersClient.login(_loginData.login, _loginData.password);
+        var user = await usersClient.login(_loginData.login, _loginData.password);
         globals.currentUser = user;
+        authService.saveCredential(_loginData.login, _loginData.password);
         Navigator.pushNamed(context, '/chat_list').then((_) {
           globals.currentUser = null;
-          globals.authToken = null;
         });
         _clearUi();
       } on Exception catch (e) {

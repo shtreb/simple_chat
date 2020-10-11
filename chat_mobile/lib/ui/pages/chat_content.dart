@@ -7,8 +7,8 @@ import 'package:chat_api_client/chat_api_client.dart';
 
 import 'package:chat_models/chat_models.dart';
 import 'package:chat_mobile/ui/widgets/common_ui.dart';
-import 'package:chat_mobile/cases/api_client.dart';
-import 'package:chat_mobile/cases/chat_component.dart';
+import 'package:chat_mobile/data/cases/api_client.dart';
+import 'package:chat_mobile/data/cases/chat_component.dart';
 import 'package:chat_mobile/flavors/globals.dart' as globals;
 
 class ChatContentPage extends StatefulWidget {

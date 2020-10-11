@@ -1,14 +1,15 @@
 import 'dart:async';
 import 'dart:collection';
 
+import 'package:chat_mobile/data/cases/services/auth-service.dart';
 import 'package:flutter/material.dart';
 import 'package:chat_models/chat_models.dart';
 import 'package:chat_api_client/chat_api_client.dart';
 
 import 'package:chat_mobile/ui/pages/chat_content.dart';
 import 'package:chat_mobile/ui/widgets/common_ui.dart';
-import 'package:chat_mobile/cases/api_client.dart';
-import 'package:chat_mobile/cases/chat_component.dart';
+import 'package:chat_mobile/data/cases/api_client.dart';
+import 'package:chat_mobile/data/cases/chat_component.dart';
 
 class ChatListPage extends StatefulWidget {
   ChatListPage({Key key, this.title, @required this.chatComponent})
@@ -102,11 +103,18 @@ class _ChatListPageState extends State<ChatListPage> {
   void refreshChats() async {
     try {
       List<Chat> found = await ChatsClient(MobileApiClient()).read({});
-      setState(() {
-        _chats = found;
-      });
+      if(mounted)
+        setState(() {
+          _chats = found;
+        });
     } on Exception catch (e) {
       print('Failed to get list of chats');
+      if(e is HttpException) {
+        if(e.statusCode == 401) {
+          await authService.logout();
+          Navigator.pushNamedAndRemoveUntil(context, '/', (route) => false);
+        }
+      }
       print(e);
     }
   }
