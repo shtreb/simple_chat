@@ -4,14 +4,12 @@ import 'package:chat_models/chat_models.dart';
 import 'package:chat_api_client/chat_api_client.dart';
 
 import 'package:chat_mobile/ui/pages/chat_content.dart';
-import 'package:chat_mobile/ui/widgets/common_ui.dart';
 import 'package:chat_mobile/data/cases/api_client.dart';
 import 'package:chat_mobile/data/cases/chat_component.dart';
 import 'package:chat_mobile/flavors/globals.dart' as globals;
 
 class CreateChatPage extends StatefulWidget {
-  CreateChatPage({Key key, this.title}) : super(key: key);
-  final String title;
+  CreateChatPage({Key key}) : super(key: key);
 
   @override
   _CreateChatPageState createState() => _CreateChatPageState();
@@ -20,8 +18,7 @@ class CreateChatPage extends StatefulWidget {
 class _CreateChatPageState extends State<CreateChatPage> {
   var _checkableUsers = <_CheckableUser>[];
 
-  @override
-  void initState() {
+  @override void initState() {
     super.initState();
     refreshUsers();
   }
@@ -29,10 +26,6 @@ class _CreateChatPageState extends State<CreateChatPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: Text(widget.title),
-          actions: <Widget>[LogoutButton()],
-        ),
         body: Column(
           children: <Widget>[
             Expanded(

@@ -1,21 +1,23 @@
 import 'dart:async';
 import 'dart:collection';
 
-import 'package:chat_mobile/data/cases/services/auth-service.dart';
 import 'package:flutter/material.dart';
 import 'package:chat_models/chat_models.dart';
 import 'package:chat_api_client/chat_api_client.dart';
 
 import 'package:chat_mobile/ui/pages/chat_content.dart';
-import 'package:chat_mobile/ui/widgets/common_ui.dart';
 import 'package:chat_mobile/data/cases/api_client.dart';
 import 'package:chat_mobile/data/cases/chat_component.dart';
+import 'package:chat_mobile/data/cases/services/auth-service.dart';
 
 class ChatListPage extends StatefulWidget {
-  ChatListPage({Key key, this.title, @required this.chatComponent})
-      : super(key: key);
-  final String title;
+
   final ChatComponent chatComponent;
+
+  ChatListPage({
+    Key key,
+    @required this.chatComponent
+  }) : super(key: key);
 
   @override
   _ChatListPageState createState() => _ChatListPageState();
@@ -51,11 +53,6 @@ class _ChatListPageState extends State<ChatListPage> {
         _chats.map<Widget>((Chat chatItem) => _buildListTile(chatItem));
     listTiles = ListTile.divideTiles(context: context, tiles: listTiles);
     return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.title),
-        actions: <Widget>[LogoutButton()],
-        automaticallyImplyLeading: false,
-      ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           Navigator.pushNamed(context, '/create_chat').then((resultValue) {

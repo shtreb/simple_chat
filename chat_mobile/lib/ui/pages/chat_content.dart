@@ -85,7 +85,7 @@ class _ChatContentPageState extends State<ChatContentPage> {
           tooltip: 'New messages',
           color: Colors.greenAccent,
           onPressed: () {
-            Navigator.popUntil(context, ModalRoute.withName('/chat_list'));
+            Navigator.popUntil(context, ModalRoute.withName('/tabs'));
           }));
     }
     actions.add(LogoutButton());

@@ -1,9 +1,8 @@
-import 'package:chat_mobile/ui/pages/splash_screen.dart';
 import 'package:flutter/material.dart';
 
+import 'package:chat_mobile/ui/pages/tabs.dart';
 import 'package:chat_mobile/ui/pages/login.dart';
-import 'package:chat_mobile/ui/pages/create_chat.dart';
-import 'package:chat_mobile/ui/widgets/chat_list.dart';
+import 'package:chat_mobile/ui/pages/splash_screen.dart';
 import 'package:chat_mobile/data/cases/chat_component.dart';
 import 'package:chat_mobile/data/cases/services/auth-service.dart';
 import 'package:chat_mobile/flavors/globals.dart' as globals;
@@ -44,18 +43,11 @@ class _SimpleChatAppState extends State<SimpleChatApp> {
               builder: (ctx, snapshot) {
                 if(snapshot.connectionState != ConnectionState.done) return SplashScreen();
                 if(snapshot.data ?? false)
-                  return ChatListPage(
-                      title: 'Chat list',
-                      chatComponent: widget._chatComponent
-                  );
+                  return TabsPage(chatComponent: widget._chatComponent);
                 return LoginPage();
               }
           ),
-          '/chat_list': (context) => ChatListPage(
-            title: 'Chat list',
-            chatComponent: widget._chatComponent,
-          ),
-          '/create_chat': (context) => CreateChatPage(title: 'Create Chat'),
+          '/tabs': (context) => TabsPage(chatComponent: widget._chatComponent,),
         },
       ),
     );

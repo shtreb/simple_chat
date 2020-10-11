@@ -138,7 +138,7 @@ class _LoginPageState extends State<LoginPage> {
         var user = await usersClient.login(_loginData.login, _loginData.password);
         globals.currentUser = user;
         authService.saveCredential(_loginData.login, _loginData.password);
-        Navigator.pushNamed(context, '/chat_list').then((_) {
+        Navigator.pushNamedAndRemoveUntil(context, '/tabs', (route) => false).then((_) {
           globals.currentUser = null;
         });
         _clearUi();
