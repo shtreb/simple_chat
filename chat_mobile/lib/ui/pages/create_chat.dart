@@ -11,7 +11,6 @@ import 'package:chat_mobile/ui/widgets/items/item-user.dart';
 import 'package:chat_mobile/data/cases/api_client.dart';
 import 'package:chat_mobile/data/cases/chat_component.dart';
 import 'package:chat_mobile/data/cases/services/live-user-collection.dart';
-import 'package:chat_mobile/data/entities/checkable-user.dart';
 import 'package:chat_mobile/data/entities/live-collection-state.dart';
 import 'package:chat_mobile/flavors/globals.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
