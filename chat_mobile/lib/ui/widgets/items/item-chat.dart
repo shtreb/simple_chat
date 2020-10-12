@@ -16,6 +16,7 @@ class ItemChat extends StatelessWidget {
         padding: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
         color: Theme.of(context).scaffoldBackgroundColor,
         child: Row(
+          mainAxisSize: MainAxisSize.max,
           children: [
             Container(
               width: 44,
@@ -29,22 +30,24 @@ class ItemChat extends StatelessWidget {
               ),
             ),
             const Padding(padding: EdgeInsets.only(left: 16)),
-            RichText(
-              text: TextSpan(
-                children: chat.members.map((e) {
-                  bool isTarget = targetCollection.hasTarget(e);
-                  return TextSpan(
-                    text: '${e.realName} ${e.realSurname}'
-                        '${chat.members.indexOf(e) != chat.members.length-1 ? ', ' : ''}',
+            Flexible(
+              child: RichText(
+                text: TextSpan(
+                    children: chat.members.map((e) {
+                      bool isTarget = targetCollection.hasTarget(e);
+                      return TextSpan(
+                          text: '${e.realName} ${e.realSurname}'
+                              '${chat.members.indexOf(e) != chat.members.length-1 ? ', ' : ''}',
+                          style: TextStyle(
+                              fontWeight: isTarget ? FontWeight.w600 : FontWeight.normal,
+                              fontSize: isTarget ? 15 : 14
+                          )
+                      );
+                    }).toList(),
                     style: TextStyle(
-                      fontWeight: isTarget ? FontWeight.w600 : FontWeight.normal,
-                      fontSize: isTarget ? 15 : 16
+                        color: Colors.black
                     )
-                  );
-                }).toList(),
-                style: TextStyle(
-                  color: Colors.black
-                )
+                ),
               ),
             )
           ],

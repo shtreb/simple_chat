@@ -34,16 +34,18 @@ class ItemUser extends StatelessWidget {
             ),
           ),
           const Padding(padding: EdgeInsets.only(left: 16)),
-          Column(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text('${user.realName.isEmpty ? 'Unknown' : user.realName} '
-                  '${user.realSurname.isEmpty ? 'Unknown' :
-              user.realSurname}'),
-              Text('${user.email.isEmpty ? 'Unknown email' : user.email}',
-                style: TextStyle(color: Colors.grey.shade700),)
-            ],
+          Flexible(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text('${user.realName.isEmpty ? 'Unknown' : user.realName} '
+                    '${user.realSurname.isEmpty ? 'Unknown' :
+                user.realSurname}'),
+                Text('${user.email.isEmpty ? 'Unknown email' : user.email}',
+                  style: TextStyle(color: Colors.grey.shade700),)
+              ],
+            )
           )
         ],
       ),

@@ -72,7 +72,7 @@ class _CreateChatPageState extends State<CreateChatPage> {
                         isChecked: _value.hasTarget(value.list[index]),
                         onClick: () {
                           targetCollection.addTarget(value.list[index]);
-                          hasTarget.value = targetCollection.hasTarget(value.list[index]);
+                          hasTarget.value = targetCollection.listTarget.isNotEmpty;
                         },
                       )
                   ),
