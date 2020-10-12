@@ -1,9 +1,11 @@
+import 'package:chat_mobile/ui/pages/account.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:provider/provider.dart';
 
 import 'package:chat_mobile/ui/pages/create_chat.dart';
 import 'package:chat_mobile/ui/pages/chat_list.dart';
 import 'package:chat_mobile/data/cases/chat_component.dart';
-import 'package:provider/provider.dart';
 
 class TabsPage extends StatefulWidget {
 
@@ -40,23 +42,43 @@ class _TabsPageState extends State<TabsPage> with TickerProviderStateMixin {
       child: Scaffold(
         appBar: AppBar(
           title: Consumer<int>(
-            builder: (_, value, __) {
-              switch(value) {
-                case 0:
-                  return Text('Chats');
-                default:
-                  return Text('Friends');
-              }
-            },
+            builder: (_, value, __) => Text(value == 0 ? 'Chats' : 'Friends'),
           ),
+          actions: [
+            CupertinoButton(
+              child: Icon(Icons.person_outline_rounded, color: Theme.of(context).primaryColor,),
+              onPressed: () => Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) => AccountPage(),
+                ),
+              )
+            )
+          ],
         ),
-        bottomNavigationBar: TabBar(
-          controller: tabCtrl,
-          labelColor: Theme.of(context).primaryColor,
-          indicatorColor: Theme.of(context).primaryColor,
-          tabs: [
-            Tab(icon: Icon(Icons.chat_sharp), text: 'chats', iconMargin: EdgeInsets.only(bottom: 2),),
-            Tab(icon: Icon(Icons.person_pin_rounded), text: 'friends', iconMargin: EdgeInsets.only(bottom: 2),)
+        bottomNavigationBar: Stack(
+          children: [
+            Container(
+              height: kToolbarHeight,
+              width: MediaQuery.of(context).size.width,
+              decoration: BoxDecoration(
+                border: Border.all(color: Theme.of(context).primaryColor.withOpacity(.1), width: 1)
+              ),
+            ),
+            SizedBox(
+              height: kToolbarHeight,
+              child: TabBar(
+                controller: tabCtrl,
+                indicator: BoxDecoration(),
+                indicatorWeight: .1,
+                labelPadding: EdgeInsets.all(0),
+                labelColor: Theme.of(context).primaryColor,
+                unselectedLabelColor: Colors.grey,
+                tabs: [
+                  Tab(icon: Icon(Icons.chat_outlined), text: 'chats', iconMargin: EdgeInsets.only(bottom: 2),),
+                  Tab(icon: Icon(Icons.person_pin_outlined), text: 'friends', iconMargin: EdgeInsets.only(bottom: 2),)
+                ],
+              ),
+            ),
           ],
         ),
         body: TabBarView(

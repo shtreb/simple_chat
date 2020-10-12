@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:collection';
 
+import 'package:chat_mobile/ui/widgets/items/item-default.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:chat_models/chat_models.dart';
@@ -68,11 +69,13 @@ class _ChatListPageState extends State<ChatListPage> {
           },
           child: ListView.builder(
             physics: BouncingScrollPhysics(),
+            padding: EdgeInsets.fromLTRB(0, 8, 0, 56),
             itemCount: value.list.length,
             itemBuilder: (ctx, int pos) {
-              return ItemChat(value.list[pos], () {
-                Navigator.of(context).push(
-                  new MaterialPageRoute(
+              return ItemDefault(
+                child: ItemChat(value.list[pos]),
+                onClick: () => Navigator.of(context).push(
+                  MaterialPageRoute(
                     builder: (context) {
                       return ChatContentPage(
                         chat: value.list[pos],
@@ -80,8 +83,8 @@ class _ChatListPageState extends State<ChatListPage> {
                       );
                     },
                   ),
-                );
-              });
+                )
+              );
             },
           )
       )

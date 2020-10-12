@@ -1,4 +1,5 @@
 import 'package:chat_mobile/data/entities/target-collection.dart';
+import 'package:chat_mobile/ui/widgets/items/item-default.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -65,16 +66,23 @@ class _CreateChatPageState extends State<CreateChatPage> {
                 child: ListView.builder(
                   physics: BouncingScrollPhysics(),
                   controller: scrollCtrl,
+                  padding: EdgeInsets.fromLTRB(0, 8, 0, 56),
                   itemCount: value.list.length,
                   itemBuilder: (BuildContext context, int index) => Consumer<TargetCollection>(
-                      builder: (_, _value, __) => ItemUser(
-                        user: value.list[index],
-                        isChecked: _value.hasTarget(value.list[index]),
-                        onClick: () {
-                          targetCollection.addTarget(value.list[index]);
-                          hasTarget.value = targetCollection.listTarget.isNotEmpty;
-                        },
-                      )
+                      builder: (_, _value, __) {
+                        bool isChecked = _value.hasTarget(value.list[index]);
+                        return ItemDefault(
+                          isChecked: isChecked,
+                          child: ItemUser(
+                            user: value.list[index],
+                            isChecked: isChecked,
+                          ),
+                          onClick: () {
+                            targetCollection.addTarget(value.list[index]);
+                            hasTarget.value = targetCollection.listTarget.isNotEmpty;
+                          },
+                        );
+                      }
                   ),
                 )
             );

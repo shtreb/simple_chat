@@ -1,5 +1,6 @@
 import 'package:chat_mobile/data/cases/services/live-chat-collection.dart';
 import 'package:chat_mobile/data/entities/target-collection.dart';
+import 'package:chat_mobile/ui/pages/account.dart';
 import 'package:flutter/material.dart';
 
 import 'package:chat_mobile/ui/pages/tabs.dart';
@@ -44,8 +45,52 @@ class _SimpleChatAppState extends State<SimpleChatApp> {
         MaterialApp(
           title: 'Simple Chat',
           theme: ThemeData(
-              primarySwatch: Colors.blue,
-              scaffoldBackgroundColor: Colors.grey.shade200
+            primaryColor: Color(0xFF7175EB),
+            primaryColorDark: Color(0xFF5759C0),
+            primaryColorLight: Color(0xFFBCBFEB),
+            scaffoldBackgroundColor: Color(0xFFF1F7FF),
+            shadowColor: Colors.black.withOpacity(.25),
+            buttonColor: Color(0xFF7175EB),
+            buttonTheme: ButtonThemeData(
+              height: 48,
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(56)),
+              textTheme: ButtonTextTheme.primary,
+              splashColor: Colors.transparent,
+              highlightColor: Color(0xFF7175EB).withOpacity(.7),
+              focusColor: Colors.transparent,
+              hoverColor: Colors.transparent,
+              buttonColor: Color(0xFF7175EB),
+            ),
+            floatingActionButtonTheme: FloatingActionButtonThemeData(
+              backgroundColor: Color(0xFF7175EB)
+            ),
+            appBarTheme: AppBarTheme(
+              color: Color(0xFFF1F7FF),
+              elevation: 0,
+              iconTheme: IconThemeData(
+                color: Color(0xFF5F5F87)
+              ),
+              textTheme: TextTheme(
+                headline6: TextStyle(
+                  color: Color(0xFF5F5F87),
+                  fontSize: 24,
+                  fontWeight: FontWeight.w700
+                )
+              )
+            ),
+            textTheme: TextTheme(
+              bodyText1: TextStyle(
+                fontSize: 16,
+                color: Color(0xFF5F5F87),
+              ),
+              bodyText2: TextStyle(
+                fontSize: 14,
+                color: Color(0xFF8E9CB0)
+              ),
+              button: TextStyle(
+                fontSize: 16,
+              )
+            )
           ),
           initialRoute: '/',
           routes: {
@@ -59,6 +104,7 @@ class _SimpleChatAppState extends State<SimpleChatApp> {
                 }
             ),
             '/tabs': (context) => TabsPage(chatComponent: widget._chatComponent,),
+            '/account': (context) => AccountPage()
           },
         ),
       ),
