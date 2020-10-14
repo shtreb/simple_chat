@@ -71,6 +71,16 @@ class _SimpleChatAppState extends State<SimpleChatApp> {
                 color: Color(0xFF5F5F87)
               ),
               textTheme: TextTheme(
+                headline3: TextStyle(
+                  color: Colors.white,
+                  fontSize: 64,
+                  fontWeight: FontWeight.w600
+                ),
+                headline2: TextStyle(
+                  color: Colors.white,
+                  fontSize: 38,
+                  fontWeight: FontWeight.w700
+                ),
                 headline6: TextStyle(
                   color: Color(0xFF5F5F87),
                   fontSize: 24,
