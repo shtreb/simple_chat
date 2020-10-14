@@ -42,7 +42,9 @@ class _TabsPageState extends State<TabsPage> with TickerProviderStateMixin {
       child: Scaffold(
         appBar: AppBar(
           title: Consumer<int>(
-            builder: (_, value, __) => Text(value == 0 ? 'Chats' : 'Friends'),
+            builder: (_, value, __) => Text(
+              value == 0 ? 'Chats' : 'Friends',
+              style: Theme.of(context).appBarTheme.textTheme.headline5,),
           ),
           actions: [
             CupertinoButton(
