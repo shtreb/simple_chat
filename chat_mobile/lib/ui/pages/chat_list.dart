@@ -1,10 +1,6 @@
 import 'dart:async';
 import 'dart:collection';
 
-import 'package:chat_mobile/ui/widgets/error.dart';
-import 'package:chat_mobile/ui/widgets/items/item-default.dart';
-import 'package:chat_mobile/ui/widgets/progress-indicator.dart';
-import 'package:chat_mobile/ui/widgets/pull-to-refresh.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -12,11 +8,17 @@ import 'package:chat_models/chat_models.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 import 'package:chat_mobile/ui/pages/chat_content.dart';
+import 'package:chat_mobile/ui/widgets/error.dart';
+import 'package:chat_mobile/ui/widgets/pull-to-refresh.dart';
+import 'package:chat_mobile/ui/widgets/progress-indicator.dart';
+import 'package:chat_mobile/ui/widgets/route_aware_widget.dart';
 import 'package:chat_mobile/ui/widgets/items/item-chat.dart';
+import 'package:chat_mobile/ui/widgets/items/item-default.dart';
 import 'package:chat_mobile/data/cases/chat_component.dart';
 import 'package:chat_mobile/data/cases/services/live-chat-collection.dart';
 import 'package:chat_mobile/data/entities/live-collection-state.dart';
 import 'package:chat_mobile/flavors/globals.dart';
+import 'package:chat_mobile/generated/i18n.dart';
 
 class ChatListPage extends StatefulWidget {
 
@@ -46,14 +48,6 @@ class _ChatListPageState extends State<ChatListPage> {
 
     if(liveChatCollection.currentState == LiveCollectionState.UNKNOWN)
       liveChatCollection.refresh();
-
-    _unreadMessagesSubscription = widget.chatComponent
-        .subscribeUnreadMessagesNotification((unreadChatIds) {
-      setState(() {
-        _unreadChats.clear();
-        _unreadChats.addAll(unreadChatIds);
-      });
-    });
   }
 
   @override Widget build(BuildContext context) {
@@ -64,14 +58,14 @@ class _ChatListPageState extends State<ChatListPage> {
 
         if(value.currentState == LiveCollectionState.ERROR && value.list.isEmpty)
           return CustomError(
-            title: '',
-            action: 'Repeat',
+            title: S.of(context).load_list_error,
+            action: S.of(context).load_list_repeat,
             callback: () => value.refresh(),
           );
 
         return PullToRefresh(
-          positive: '',
-          negative: '',
+          positive: S.of(context).load_list_success,
+          negative: S.of(context).load_list_error,
           refreshController: refreshCtrl,
           onRefresh: () async {
             try {
@@ -89,12 +83,14 @@ class _ChatListPageState extends State<ChatListPage> {
                 child: ItemChat(value.list[pos]),
                 onClick: () => Navigator.of(context).push(
                   MaterialPageRoute(
-                    builder: (context) {
-                      return ChatContentPage(
+                    builder: (context) => RouteAwareWidget(
+                      'chat',
+                      context: context,
+                      child: ChatContentPage(
                         chat: value.list[pos],
                         chatComponent: ChatComponentWidget.of(context).chatComponent,
-                      );
-                    },
+                      ),
+                    ),
                   ),
                 )
             ),
@@ -107,7 +103,7 @@ class _ChatListPageState extends State<ChatListPage> {
   @override void dispose() {
     scrollCtrl?.dispose();
     refreshCtrl?.dispose();
-    _unreadMessagesSubscription.cancel();
+    _unreadMessagesSubscription?.cancel();
     super.dispose();
   }
 }

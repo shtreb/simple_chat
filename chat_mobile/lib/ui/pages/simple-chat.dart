@@ -1,16 +1,21 @@
-import 'package:chat_mobile/data/cases/services/live-chat-collection.dart';
-import 'package:chat_mobile/data/entities/target-collection.dart';
-import 'package:chat_mobile/ui/pages/account.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:provider/provider.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 
 import 'package:chat_mobile/ui/pages/tabs.dart';
 import 'package:chat_mobile/ui/pages/login.dart';
+import 'package:chat_mobile/ui/pages/account.dart';
 import 'package:chat_mobile/ui/pages/splash_screen.dart';
+import 'package:chat_mobile/ui/widgets/route_aware_widget.dart';
 import 'package:chat_mobile/data/cases/chat_component.dart';
 import 'package:chat_mobile/data/cases/services/auth-service.dart';
+import 'package:chat_mobile/data/cases/services/notification-service.dart';
+import 'package:chat_mobile/data/cases/services/live-chat-collection.dart';
 import 'package:chat_mobile/data/cases/services/live-user-collection.dart';
+import 'package:chat_mobile/data/entities/target-collection.dart';
 import 'package:chat_mobile/flavors/globals.dart';
-import 'package:provider/provider.dart';
+import 'package:chat_mobile/generated/i18n.dart';
 
 class SimpleChatApp extends StatefulWidget {
   final ChatComponent _chatComponent = ChatComponent(webSocketAddress);
@@ -20,10 +25,21 @@ class SimpleChatApp extends StatefulWidget {
 }
 
 class _SimpleChatAppState extends State<SimpleChatApp> {
+
   @override
   void initState() {
     super.initState();
     widget._chatComponent.connect();
+    widget._chatComponent.subscribeUnreadMessagesNotification((unreadChatIds) {
+      if(unreadChatIds == null || unreadChatIds.isEmpty || currentUser == null) return;
+      notificationService.onDidReceiveLocalNotification(
+          0,
+          S.of(context).notify_header,
+          S.of(context).notify_body,
+          unreadChatIds.first.toString()
+      );
+    });
+    notificationService.init();
   }
 
   @override
@@ -43,7 +59,7 @@ class _SimpleChatAppState extends State<SimpleChatApp> {
       child: ChatComponentWidget(
         widget._chatComponent,
         MaterialApp(
-          title: 'Simple Chat',
+          title: "Simple chat",
           theme: ThemeData(
             primaryColor: Color(0xFF7175EB),
             primaryColorDark: Color(0xFF5759C0),
@@ -107,19 +123,36 @@ class _SimpleChatAppState extends State<SimpleChatApp> {
               )
             )
           ),
+          localizationsDelegates: [
+            S.delegate,
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate
+          ],
+          supportedLocales: S.delegate.supportedLocales,
           initialRoute: '/',
           routes: {
             '/': (context) => FutureBuilder<bool>(
                 future: authService.checkCode(),
                 builder: (ctx, snapshot) {
                   if(snapshot.connectionState != ConnectionState.done) return SplashScreen();
-                  if(snapshot.data ?? false)
-                    return TabsPage(chatComponent: widget._chatComponent);
-                  return LoginPage();
+                  bool isAuth = snapshot.data ?? false;
+                  return RouteAwareWidget(isAuth ? 'tabs' : 'login',
+                      context: context,
+                      child: isAuth ?
+                        TabsPage(chatComponent: widget._chatComponent) :
+                        LoginPage());
                 }
             ),
-            '/tabs': (context) => TabsPage(chatComponent: widget._chatComponent,),
-            '/account': (context) => AccountPage()
+            '/tabs': (context) => RouteAwareWidget(
+              'tabs',
+              context: context,
+              child: TabsPage(chatComponent: widget._chatComponent,)
+            ),
+            '/account': (context) => RouteAwareWidget(
+                'account',
+                context: context,
+                child: AccountPage()
+            )
           },
         ),
       ),

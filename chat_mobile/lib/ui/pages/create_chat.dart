@@ -1,4 +1,5 @@
 import 'package:chat_mobile/data/entities/target-collection.dart';
+import 'package:chat_mobile/generated/i18n.dart';
 import 'package:chat_mobile/ui/widgets/error.dart';
 import 'package:chat_mobile/ui/widgets/items/item-default.dart';
 import 'package:chat_mobile/ui/widgets/progress-indicator.dart';
@@ -58,14 +59,14 @@ class _CreateChatPageState extends State<CreateChatPage> {
 
             if(value.currentState == LiveCollectionState.ERROR && value.list.isEmpty)
               return CustomError(
-                title: '',
-                action: 'Repeat',
+                title: S.of(context).load_list_error,
+                action: S.of(context).load_list_repeat,
                 callback: () => value.refresh(),
               );
 
             return PullToRefresh(
-                positive: '',
-                negative: '',
+                positive: S.of(context).load_list_success,
+                negative: S.of(context).load_list_error,
                 refreshController: refreshCtrl,
                 onRefresh: () async {
                   try {

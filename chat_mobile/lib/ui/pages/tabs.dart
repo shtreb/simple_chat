@@ -6,6 +6,7 @@ import 'package:chat_mobile/ui/pages/account.dart';
 import 'package:chat_mobile/ui/pages/chat_list.dart';
 import 'package:chat_mobile/ui/pages/create_chat.dart';
 import 'package:chat_mobile/data/cases/chat_component.dart';
+import 'package:chat_mobile/generated/i18n.dart';
 
 class TabsPage extends StatefulWidget {
 
@@ -43,7 +44,7 @@ class _TabsPageState extends State<TabsPage> with TickerProviderStateMixin {
         appBar: AppBar(
           title: Consumer<int>(
             builder: (_, value, __) => Text(
-              value == 0 ? 'Chats' : 'Friends',
+              value == 0 ? S.of(context).tabs_chats : S.of(context).tabs_friends,
               style: Theme.of(context).appBarTheme.textTheme.headline5,),
           ),
           actions: [
@@ -76,8 +77,14 @@ class _TabsPageState extends State<TabsPage> with TickerProviderStateMixin {
                 labelColor: Theme.of(context).primaryColor,
                 unselectedLabelColor: Colors.grey,
                 tabs: [
-                  Tab(icon: Icon(Icons.chat_outlined), text: 'chats', iconMargin: EdgeInsets.only(bottom: 2),),
-                  Tab(icon: Icon(Icons.person_pin_outlined), text: 'friends', iconMargin: EdgeInsets.only(bottom: 2),)
+                  Tab(
+                    icon: Icon(Icons.chat_outlined),
+                    text: S.of(context).tabs_tab_chat,
+                    iconMargin: EdgeInsets.only(bottom: 2),),
+                  Tab(
+                    icon: Icon(Icons.person_pin_outlined),
+                    text: S.of(context).tabs_tab_friends,
+                    iconMargin: EdgeInsets.only(bottom: 2),)
                 ],
               ),
             ),

@@ -1,18 +1,18 @@
-import 'package:chat_mobile/data/cases/services/auth-service.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:chat_mobile/generated/i18n.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
 
 import 'package:chat_models/chat_models.dart';
 import 'package:chat_api_client/chat_api_client.dart';
 
 import 'package:chat_mobile/data/cases/api_client.dart';
+import 'package:chat_mobile/data/cases/services/auth-service.dart';
 import 'package:chat_mobile/flavors/globals.dart' as globals;
 
 class LoginPage extends StatefulWidget {
   LoginPage({Key key}) : super(key: key);
 
-  @override
-  _LoginPageState createState() => _LoginPageState();
+  @override _LoginPageState createState() => _LoginPageState();
 }
 
 class _LoginData {
@@ -22,25 +22,10 @@ class _LoginData {
 
 class _LoginPageState extends State<LoginPage> {
   final GlobalKey<FormState> _formKey = new GlobalKey<FormState>();
-  _LoginData _loginData = new _LoginData();
   final TextEditingController _loginController = new TextEditingController();
   final TextEditingController _passwordController = new TextEditingController();
 
-  String _validateLogin(String value) {
-    if (value.length < 2) {
-      // check login rules here
-      return 'The Login must be at least 2 characters.';
-    }
-    return null;
-  }
-
-  String _validatePassword(String value) {
-    if (value.length < 2) {
-      // check password rules here
-      return 'The Password must be at least 2 characters.';
-    }
-    return null;
-  }
+  _LoginData _loginData = new _LoginData();
 
   @override
   Widget build(BuildContext context) {
@@ -71,11 +56,11 @@ class _LoginPageState extends State<LoginPage> {
                       alignment: Alignment.centerLeft,
                       child: RichText(
                         text: TextSpan(
-                            text: 'Welcome\n',
+                            text: S.of(context).auth_welcome + '\n',
                             style: Theme.of(context).appBarTheme.textTheme.headline3,
                             children: <TextSpan> [
                               TextSpan(
-                                  text: 'to the app',
+                                  text: S.of(context).auth_sub_welcome,
                                   style: Theme.of(context).appBarTheme.textTheme.headline2
                               )
                             ]
@@ -91,17 +76,19 @@ class _LoginPageState extends State<LoginPage> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: <Widget>[
                           _createTextFormField(
-                              hintText: 'Login',
-                              labelText: 'Enter your login',
+                              hintText: S.of(context).auth_login,
+                              labelText: S.of(context).auth_enter_login,
                               ctrl: _loginController,
-                              validator: this._validateLogin,
+                              validator: (value) => value.length < 2 ?
+                                S.of(context).auth_login_not_valid : null,
                               onSaved: (String value) =>  this._loginData.login = value,
                           ),
                           _createTextFormField(
-                            hintText: 'Password',
-                            labelText: 'Enter your password',
+                            hintText: S.of(context).auth_password,
+                            labelText: S.of(context).auth_enter_password,
                             ctrl: _passwordController,
-                            validator: this._validatePassword,
+                            validator: (value) => value.length < 2 ?
+                              S.of(context).auth_password_not_valid : null,
                             obfuscate: true,
                             onSaved: (String value) => this._loginData.password = value,
                           ),
@@ -111,11 +98,12 @@ class _LoginPageState extends State<LoginPage> {
                               SizedBox(
                                 width: MediaQuery.of(context).size.width,
                                 child: RaisedButton(
-                                    child: Text("Login"),
+                                    child: Text(S.of(context).auth_input),
                                     onPressed: () => _login(scaffoldContext)),
                               ),
                               CupertinoButton(
-                                child: Text("Sign up", style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.white),),
+                                child: Text(S.of(context).auth_sign,
+                                  style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.white),),
                                 onPressed: () => _signUp(scaffoldContext),
                               ),
                             ],
@@ -183,11 +171,11 @@ class _LoginPageState extends State<LoginPage> {
               .then((createdUser) {
             _clearUi();
             final snackBar =
-                SnackBar(content: Text('User \'${createdUser.name}\' created'));
+                SnackBar(content: Text(S.of(context).auth_user_created(createdUser.name)));
             Scaffold.of(context).showSnackBar(snackBar);
           }).catchError((signUpError) {
             final snackBar = SnackBar(
-                content: Text('Sign up failed: ${signUpError.message}'));
+                content: Text(S.of(context).auth_user_fail(signUpError.message)));
             Scaffold.of(context).showSnackBar(snackBar);
             print('Sign up failed');
             print(signUpError);
@@ -211,7 +199,7 @@ class _LoginPageState extends State<LoginPage> {
         });
         _clearUi();
       } on Exception catch (e) {
-        final snackBar = SnackBar(content: Text('Login failed'));
+        final snackBar = SnackBar(content: Text(S.of(context).auth_login_fail));
         Scaffold.of(context).showSnackBar(snackBar);
         print('Login failed');
         print(e);
@@ -224,16 +212,16 @@ class _LoginPageState extends State<LoginPage> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          content: new Text("Do you want to create user '$username' ?"),
+          content: new Text(S.of(context).auth_create_user(username)),
           actions: <Widget>[
             new FlatButton(
-              child: new Text("Cancel"),
+              child: new Text(S.of(context).dialog_cancel),
               onPressed: () {
                 Navigator.of(context).pop(false);
               },
             ),
             new FlatButton(
-              child: new Text("Ok"),
+              child: new Text(S.of(context).dialog_ok),
               onPressed: () {
                 Navigator.of(context).pop(true);
               },

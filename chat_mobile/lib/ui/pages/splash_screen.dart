@@ -1,3 +1,4 @@
+import 'package:chat_mobile/generated/i18n.dart';
 import 'package:flutter/material.dart';
 
 class SplashScreen extends StatelessWidget {
@@ -6,7 +7,7 @@ class SplashScreen extends StatelessWidget {
     return Container(
       color: Theme.of(context).primaryColor,
       child: Center(
-        child: Text("Simple Chat",
+        child: Text(S.of(context).app_name,
           style: TextStyle(
             color: Colors.white,
             decoration: TextDecoration.none

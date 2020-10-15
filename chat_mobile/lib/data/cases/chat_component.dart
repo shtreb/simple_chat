@@ -64,12 +64,9 @@ class ChatComponent {
 
   StreamSubscription<Message> subscribeMessages(
       NotificationCallback<Message> callback, ChatId chatId) {
-    _chatIdsWithUnreadMessages
-        .remove(chatId); // assume all messages are read in this chat
-    _notifyUnread();
+    _chatIdsWithUnreadMessages.remove(chatId); // assume all messages are read in this chat
     var streamController = StreamController<Message>();
-    _messageStreamControllers
-        .add(_ChatMessageStreamControllerWrapper(chatId, streamController));
+    _messageStreamControllers.add(_ChatMessageStreamControllerWrapper(chatId, streamController));
     streamController.onCancel = () => streamController.close();
     return streamController.stream.listen((message) {
       callback(message);

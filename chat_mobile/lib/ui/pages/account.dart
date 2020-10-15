@@ -9,6 +9,7 @@ import 'package:chat_mobile/ui/widgets/common_ui.dart';
 import 'package:chat_mobile/data/cases/api_client.dart';
 import 'package:chat_mobile/data/cases/validates/validate-phone.dart';
 import 'package:chat_mobile/flavors/globals.dart';
+import 'package:chat_mobile/generated/i18n.dart';
 
 class AccountPage extends StatefulWidget {
   @override _AccountPageState createState() => _AccountPageState();
@@ -30,7 +31,7 @@ class _AccountPageState extends State<AccountPage> {
       value: showButton,
       child: Scaffold(
         appBar: AppBar(
-          title: Text('Account'),
+          title: Text(S.of(context).account),
           centerTitle: true,
           actions: [
             LogoutButton()
@@ -57,7 +58,7 @@ class _AccountPageState extends State<AccountPage> {
                     ),
                   ),
                   const Padding(padding: EdgeInsets.only(top: 16)),
-                  Text('Мой id: ${user.id}', style: Theme.of(context).textTheme.bodyText1,),
+                  Text(S.of(context).account_id(user.id), style: Theme.of(context).textTheme.bodyText1,),
                   Container(
                       width: MediaQuery.of(context).size.width,
                       padding: EdgeInsets.symmetric(vertical: 16, horizontal: 24),
@@ -67,8 +68,8 @@ class _AccountPageState extends State<AccountPage> {
                             controller: TextEditingController(text: user.realName)
                               ..selection = TextSelection.collapsed(offset: user.realName.length),
                             decoration: InputDecoration(
-                                hintText: 'Real Name',
-                                labelText: 'Enter your name',
+                                hintText: S.of(context).account_name,
+                                labelText: S.of(context).account_enter_name,
                             ),
                             onChanged: (value) {
                               user.realName = value;
@@ -79,8 +80,8 @@ class _AccountPageState extends State<AccountPage> {
                             controller: TextEditingController(text: user.realSurname)
                               ..selection = TextSelection.collapsed(offset: user.realSurname.length),
                             decoration: InputDecoration(
-                                hintText: 'Real Surname',
-                                labelText: 'Enter your Surname'
+                                hintText: S.of(context).account_surname,
+                                labelText: S.of(context).account_enter_surname
                             ),
                             onChanged: (value) {
                               user.realSurname = value;
@@ -91,8 +92,8 @@ class _AccountPageState extends State<AccountPage> {
                             controller: TextEditingController(text: user.name)
                               ..selection = TextSelection.collapsed(offset: user.name.length),
                             decoration: InputDecoration(
-                                hintText: 'Phone',
-                                labelText: 'Enter your phone number',
+                                hintText: S.of(context).account_phone,
+                                labelText: S.of(context).account_enter_phone,
                                 prefix: Text('+')
                             ),
                             keyboardType: TextInputType.number,
@@ -109,8 +110,8 @@ class _AccountPageState extends State<AccountPage> {
                             controller: TextEditingController(text: user.email)
                               ..selection = TextSelection.collapsed(offset: user.email.length),
                             decoration: InputDecoration(
-                                hintText: 'E-mail',
-                                labelText: 'Enter your e-mail'
+                                hintText: S.of(context).account_email,
+                                labelText: S.of(context).account_enter_email
                             ),
                             keyboardType: TextInputType.emailAddress,
                             onChanged: (value) {
@@ -127,7 +128,7 @@ class _AccountPageState extends State<AccountPage> {
                     builder: (_, value, __) => value ? Column(
                       children: [
                         FlatButton(
-                            child: Text('save'),
+                            child: Text(S.of(context).account_save),
                             minWidth: MediaQuery.of(context).size.width-64,
                             color: Theme.of(context).buttonColor,
                             onPressed: () async {
@@ -140,7 +141,8 @@ class _AccountPageState extends State<AccountPage> {
                             }
                         ),
                         CupertinoButton(
-                            child: Text('Reset Info', style: TextStyle(color: Theme.of(context).textTheme.bodyText1.color),),
+                            child: Text(S.of(context).account_reset,
+                              style: TextStyle(color: Theme.of(context).textTheme.bodyText1.color),),
                             onPressed: () {
                               resetUser();
                               checkChanges();
