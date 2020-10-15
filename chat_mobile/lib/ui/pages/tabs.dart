@@ -1,10 +1,10 @@
-import 'package:chat_mobile/ui/pages/account.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:provider/provider.dart';
 
-import 'package:chat_mobile/ui/pages/create_chat.dart';
+import 'package:chat_mobile/ui/pages/account.dart';
 import 'package:chat_mobile/ui/pages/chat_list.dart';
+import 'package:chat_mobile/ui/pages/create_chat.dart';
 import 'package:chat_mobile/data/cases/chat_component.dart';
 
 class TabsPage extends StatefulWidget {

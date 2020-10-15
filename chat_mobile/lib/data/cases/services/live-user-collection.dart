@@ -13,17 +13,10 @@ class LiveUserCollection extends LiveCollection<User> {
   @override
   @protected
   Future<List<User>> load() async {
-    try {
-      UsersClient _usersClient = UsersClient(MobileApiClient());
-      List<User> found = await _usersClient.read({});
-      found.removeWhere((user) => user.id == currentUser.id);
-      apply(found);
-      return found;
-    } on Exception catch (e) {
-      debugPrint('Failed to get list of users');
-      debugPrint(e.toString());
-    }
-    return null;
+    UsersClient _usersClient = UsersClient(MobileApiClient());
+    List<User> found = await _usersClient.read({});
+    found.removeWhere((user) => user.id == currentUser.id);
+    return found;
   }
 
 }

@@ -10,15 +10,8 @@ class LiveChatCollection extends LiveCollection<Chat> {
   double currentScrollOffset = .0;
 
   @override Future<List<Chat>> load() async {
-    try {
-      List<Chat> list = await ChatsClient(MobileApiClient()).read({});
-      return list;
-    } on Exception catch (e) {
-      debugPrint('Failed to get list of chats');
-      debugPrint(e.toString());
-      //TODO add error handler
-    }
-    return null;
+    List<Chat> list = await ChatsClient(MobileApiClient()).read({});
+    return list;
   }
 
 }

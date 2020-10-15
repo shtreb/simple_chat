@@ -49,6 +49,16 @@ class _CreateChatPageState extends State<CreateChatPage> {
       child: Scaffold(
         body: Consumer<LiveUserCollection>(
           builder: (_, value, __) {
+            if(value.currentState == LiveCollectionState.LOADING && value.list.isEmpty) {
+              return Center(
+                child: SizedBox(
+                  width: 80,
+                  height: 80,
+                  child: CircularProgressIndicator(),
+                ),
+              );
+            }
+
             return SmartRefresher(
                 enablePullUp: false,
                 enablePullDown: true,

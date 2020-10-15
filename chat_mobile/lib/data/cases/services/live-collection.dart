@@ -17,7 +17,7 @@ abstract class LiveCollection<T> with ChangeNotifier {
   List<T> get list => _list;
 
   /// reload all collection
-  refresh() => loadCollection(load());
+  refresh() => loadCollection();
 
   /// load next rage
   loadNext(int begin, int end) {
@@ -34,9 +34,10 @@ abstract class LiveCollection<T> with ChangeNotifier {
   @protected Future<List<T>> load();
 
   /// function load collection
-  loadCollection(Future<List<T>> load) async {
+  loadCollection() async {
     _state = LiveCollectionState.LOADING;
-    apply(await load);
+    notifyListeners();
+    apply(await load());
   }
 
   add(List<T> list) {

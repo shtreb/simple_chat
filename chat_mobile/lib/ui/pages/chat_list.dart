@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:collection';
 
 import 'package:chat_mobile/ui/widgets/items/item-default.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:chat_models/chat_models.dart';
@@ -54,40 +55,54 @@ class _ChatListPageState extends State<ChatListPage> {
 
   @override Widget build(BuildContext context) {
     return Consumer<LiveChatCollection>(
-      builder: (_, value, __) => SmartRefresher(
-          enablePullUp: false,
-          enablePullDown: true,
-          controller: refreshCtrl,
-          header: WaterDropHeader(),
-          onRefresh: () async {
-            try {
-              await liveChatCollection.refresh();
-            } catch(_) {
-              //TODO add handle error
-            }
-            refreshCtrl.refreshCompleted();
-          },
-          child: ListView.builder(
-            physics: BouncingScrollPhysics(),
-            padding: EdgeInsets.fromLTRB(0, 8, 0, 56),
-            itemCount: value.list.length,
-            itemBuilder: (ctx, int pos) {
-              return ItemDefault(
-                child: ItemChat(value.list[pos]),
-                onClick: () => Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (context) {
-                      return ChatContentPage(
-                        chat: value.list[pos],
-                        chatComponent: ChatComponentWidget.of(context).chatComponent,
-                      );
-                    },
-                  ),
-                )
-              );
+      builder: (_, value, __) {
+        if(value.currentState == LiveCollectionState.LOADING && value.list.isEmpty) {
+          return Center(
+            child: SizedBox(
+              width: 80,
+              height: 80,
+              child: CircularProgressIndicator(),
+            ),
+          );
+        }
+
+        return SmartRefresher(
+            enablePullUp: false,
+            enablePullDown: true,
+            controller: refreshCtrl,
+            header: WaterDropHeader(
+              waterDropColor: Theme.of(context).primaryColor,
+            ),
+            onRefresh: () async {
+              try {
+                await liveChatCollection.refresh();
+                refreshCtrl.refreshCompleted();
+              } catch(_) {
+                refreshCtrl.refreshFailed();
+              }
             },
-          )
-      )
+            child: ListView.builder(
+              physics: BouncingScrollPhysics(),
+              padding: EdgeInsets.fromLTRB(0, 8, 0, 56),
+              itemCount: value.list.length,
+              itemBuilder: (ctx, int pos) {
+                return ItemDefault(
+                    child: ItemChat(value.list[pos]),
+                    onClick: () => Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) {
+                          return ChatContentPage(
+                            chat: value.list[pos],
+                            chatComponent: ChatComponentWidget.of(context).chatComponent,
+                          );
+                        },
+                      ),
+                    )
+                );
+              },
+            )
+        );
+      }
     );
   }
 
