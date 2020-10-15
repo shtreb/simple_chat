@@ -1,7 +1,10 @@
 import 'dart:async';
 import 'dart:collection';
 
+import 'package:chat_mobile/ui/widgets/error.dart';
 import 'package:chat_mobile/ui/widgets/items/item-default.dart';
+import 'package:chat_mobile/ui/widgets/progress-indicator.dart';
+import 'package:chat_mobile/ui/widgets/pull-to-refresh.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -56,51 +59,46 @@ class _ChatListPageState extends State<ChatListPage> {
   @override Widget build(BuildContext context) {
     return Consumer<LiveChatCollection>(
       builder: (_, value, __) {
-        if(value.currentState == LiveCollectionState.LOADING && value.list.isEmpty) {
-          return Center(
-            child: SizedBox(
-              width: 80,
-              height: 80,
-              child: CircularProgressIndicator(),
-            ),
-          );
-        }
+        if(value.currentState == LiveCollectionState.LOADING && value.list.isEmpty)
+          return CustomProgressIndicator();
 
-        return SmartRefresher(
-            enablePullUp: false,
-            enablePullDown: true,
-            controller: refreshCtrl,
-            header: WaterDropHeader(
-              waterDropColor: Theme.of(context).primaryColor,
+        if(value.currentState == LiveCollectionState.ERROR && value.list.isEmpty)
+          return CustomError(
+            title: '',
+            action: 'Repeat',
+            callback: () => value.refresh(),
+          );
+
+        return PullToRefresh(
+          positive: '',
+          negative: '',
+          refreshController: refreshCtrl,
+          onRefresh: () async {
+            try {
+              await liveChatCollection.refresh();
+              refreshCtrl.refreshCompleted();
+            } catch(_) {
+              refreshCtrl.refreshFailed();
+            }
+          },
+          child: ListView.builder(
+            physics: BouncingScrollPhysics(),
+            padding: EdgeInsets.fromLTRB(0, 8, 0, 56),
+            itemCount: value.list.length,
+            itemBuilder: (ctx, int pos) => ItemDefault(
+                child: ItemChat(value.list[pos]),
+                onClick: () => Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) {
+                      return ChatContentPage(
+                        chat: value.list[pos],
+                        chatComponent: ChatComponentWidget.of(context).chatComponent,
+                      );
+                    },
+                  ),
+                )
             ),
-            onRefresh: () async {
-              try {
-                await liveChatCollection.refresh();
-                refreshCtrl.refreshCompleted();
-              } catch(_) {
-                refreshCtrl.refreshFailed();
-              }
-            },
-            child: ListView.builder(
-              physics: BouncingScrollPhysics(),
-              padding: EdgeInsets.fromLTRB(0, 8, 0, 56),
-              itemCount: value.list.length,
-              itemBuilder: (ctx, int pos) {
-                return ItemDefault(
-                    child: ItemChat(value.list[pos]),
-                    onClick: () => Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (context) {
-                          return ChatContentPage(
-                            chat: value.list[pos],
-                            chatComponent: ChatComponentWidget.of(context).chatComponent,
-                          );
-                        },
-                      ),
-                    )
-                );
-              },
-            )
+          ),
         );
       }
     );

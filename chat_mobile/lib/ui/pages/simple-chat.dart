@@ -66,7 +66,7 @@ class _SimpleChatAppState extends State<SimpleChatApp> {
             ),
             appBarTheme: AppBarTheme(
               color: Color(0xFFF1F7FF),
-              elevation: 0,
+              elevation: 1,
               iconTheme: IconThemeData(
                 color: Color(0xFF5F5F87)
               ),

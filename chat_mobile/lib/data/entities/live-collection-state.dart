@@ -3,4 +3,5 @@ enum LiveCollectionState {
   INIT,
   LOADING,
   READY,
+  ERROR
 }

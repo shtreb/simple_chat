@@ -1,5 +1,9 @@
 import 'package:chat_mobile/data/entities/target-collection.dart';
+import 'package:chat_mobile/ui/widgets/error.dart';
 import 'package:chat_mobile/ui/widgets/items/item-default.dart';
+import 'package:chat_mobile/ui/widgets/progress-indicator.dart';
+import 'package:chat_mobile/ui/widgets/pull-to-refresh.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -40,7 +44,7 @@ class _CreateChatPageState extends State<CreateChatPage> {
     super.initState();
 
     if(liveUserCollection.currentState == LiveCollectionState.UNKNOWN)
-      liveUserCollection.load();
+      liveUserCollection.refresh();
   }
 
   @override Widget build(BuildContext context) {
@@ -49,28 +53,27 @@ class _CreateChatPageState extends State<CreateChatPage> {
       child: Scaffold(
         body: Consumer<LiveUserCollection>(
           builder: (_, value, __) {
-            if(value.currentState == LiveCollectionState.LOADING && value.list.isEmpty) {
-              return Center(
-                child: SizedBox(
-                  width: 80,
-                  height: 80,
-                  child: CircularProgressIndicator(),
-                ),
-              );
-            }
+            if(value.currentState == LiveCollectionState.LOADING && value.list.isEmpty)
+              return CustomProgressIndicator();
 
-            return SmartRefresher(
-                enablePullUp: false,
-                enablePullDown: true,
-                controller: refreshCtrl,
-                header: WaterDropHeader(),
+            if(value.currentState == LiveCollectionState.ERROR && value.list.isEmpty)
+              return CustomError(
+                title: '',
+                action: 'Repeat',
+                callback: () => value.refresh(),
+              );
+
+            return PullToRefresh(
+                positive: '',
+                negative: '',
+                refreshController: refreshCtrl,
                 onRefresh: () async {
                   try {
-                    await liveUserCollection.refresh();
+                    await liveChatCollection.refresh();
+                    refreshCtrl.refreshCompleted();
                   } catch(_) {
-                    //TODO add handle error
+                    refreshCtrl.refreshFailed();
                   }
-                  refreshCtrl.refreshCompleted();
                 },
                 child: ListView.builder(
                   physics: BouncingScrollPhysics(),

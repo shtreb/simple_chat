@@ -37,7 +37,13 @@ abstract class LiveCollection<T> with ChangeNotifier {
   loadCollection() async {
     _state = LiveCollectionState.LOADING;
     notifyListeners();
-    apply(await load());
+    try {
+      apply(await load());
+    } catch(e) {
+      _state = LiveCollectionState.ERROR;
+      notifyListeners();
+      rethrow;
+    }
   }
 
   add(List<T> list) {
