@@ -41,7 +41,7 @@ main() async {
   };
 
   final server = ApiServer(
-      address: InternetAddress('192.168.0.20', type: InternetAddressType.IPv4),//InternetAddress.anyIPv4,
+      address: InternetAddress('CHANGE TO YOUR IP', type: InternetAddressType.IPv4),//InternetAddress.anyIPv4,
       port: 3333,
       handler: shelf.Pipeline()
           .addMiddleware(CorsHeadersMiddleware({

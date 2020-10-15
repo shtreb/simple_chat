@@ -6,7 +6,7 @@ import 'package:chat_mobile/data/entities/target-collection.dart';
 import 'package:chat_models/chat_models.dart';
 import 'package:flutter/widgets.dart';
 
-const String host = '192.168.0.20';
+const String host = 'localhost';
 const String webSocketAddress = 'ws://$host:3333/ws';
 const String chatApiAddress = 'http://$host:3333';
 
